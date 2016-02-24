@@ -1,7 +1,6 @@
-package main
+package bigg
 
 import (
-	"fmt"
 	"github.com/huydx/murmur3"
 	"math/rand"
 	"time"
@@ -48,11 +47,4 @@ func Jaccard(set1 []string, set2 []string) float32 {
 	}
 
 	return float32(correct) / float32(TRIAL)
-}
-
-func main() {
-	set1 := []string{"ff", "aaasdadad", "yy", "zz", "aa", "sadadada", "sadadsadadggg"}
-	set2 := []string{"ff", "aaasdadad", "yy", "zz"}
-
-	fmt.Println(Jaccard(set1, set2))
 }
