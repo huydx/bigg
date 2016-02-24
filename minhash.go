@@ -2,32 +2,57 @@ package main
 
 import (
 	"fmt"
-	"github.com/spaolacci/murmur3"
+	"github.com/huydx/murmur3"
+	"math/rand"
+	"time"
 )
 
-func HashBytes(b []byte) []byte {
-	h1, h2 := murmur3.Sum128(b)
-	return []byte{
-		byte(h1 >> 56), byte(h1 >> 48), byte(h1 >> 40), byte(h1 >> 32),
-		byte(h1 >> 24), byte(h1 >> 16), byte(h1 >> 8), byte(h1),
-		byte(h2 >> 56), byte(h2 >> 48), byte(h2 >> 40), byte(h2 >> 32),
-		byte(h2 >> 24), byte(h2 >> 16), byte(h2 >> 8), byte(h2),
-	}
-}
+const (
+	MAXUINT32 = ^uint32(0)
+	MAXUINT   = ^uint(0)
+	TRIAL     = 1919
+)
 
-func HashString(s string) []byte {
-	return HashBytes([]byte(s))
-}
+func MinHash(set []string, seed uint32) uint64 {
+	minHash := MAXUINT32
 
-func CalcMinHash(set []string) string {
-	//minHash := -1
+	hash := murmur3.New32(seed)
+
 	for _, item := range set {
-		s := string(HashString(item))
-		fmt.Printf("%s", s)
+		hash.Write([]byte(item))
+		s := hash.Sum32()
+		if s < minHash {
+			minHash = s
+		}
 	}
-	return ""
+
+	return uint64(minHash)
+}
+
+func BBitMinHash(set []string) uint64 {
+	return 0
+}
+
+func Jaccard(set1 []string, set2 []string) float32 {
+	correct := 0
+	rand.Seed(time.Now().UnixNano())
+
+	for i := 0; i < TRIAL; i++ {
+		rand_seed := uint32(rand.Intn(99999))
+		min_hash1 := MinHash(set1, rand_seed)
+		min_hash2 := MinHash(set2, rand_seed)
+
+		if min_hash1 == min_hash2 {
+			correct += 1
+		}
+	}
+
+	return float32(correct) / float32(TRIAL)
 }
 
 func main() {
-	CalcMinHash([]string{"ff", "yy", "zz"})
+	set1 := []string{"ff", "aaasdadad", "yy", "zz", "aa", "sadadada", "sadadsadadggg"}
+	set2 := []string{"ff", "aaasdadad", "yy", "zz"}
+
+	fmt.Println(Jaccard(set1, set2))
 }
