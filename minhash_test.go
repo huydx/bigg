@@ -25,9 +25,10 @@ func approximate(x1 float32, x2 float32) bool {
 	}
 }
 
-func TestRef(t *testing.T) {
+func TestRefMinHash(t *testing.T) {
 	for _, elem := range data {
-		jaccard := Jaccard(elem.set1, elem.set2)
+		m := NewMinHash(128)
+		jaccard := m.Jaccard(elem.set1, elem.set2)
 		if !approximate(jaccard, elem.jaccard) {
 			t.Errorf("jaccard value mismatch")
 		}
