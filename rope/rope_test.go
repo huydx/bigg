@@ -37,3 +37,21 @@ func TestRopeSplit(t *testing.T) {
 		t.Error("Error splitting string: abcd/ef => ", r1, r2)
 	}
 }
+
+//benchmark test
+func BenchmarkRope_Concat(b *testing.B) {
+	r1 := New("fffffffffffffffffffffffffffffff")
+	r2 := New("gggggggggggggggggggggggggggggggggggggggggg")
+	for i := 0; i < b.N; i++ {
+		r3 := r1.Concat(r2)
+		r3.String()
+	}
+}
+
+func BenchmarkString_Concat(b *testing.B) {
+	r1 := "fffffffffffffffffffffffffffffff"
+	r2 := "gggggggggggggggggggggggggggggggggggggggggg"
+	for i := 0; i < b.N; i++ {
+		_ = r1 + r2
+	}
+}
