@@ -1,2 +1,3 @@
 # bigg
-small repo for big thing 
+
+random golang training stuffs
