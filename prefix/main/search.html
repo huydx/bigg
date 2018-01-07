@@ -1,0 +1,27 @@
+<html>
+<title>kipalog title search</title>
+<body>
+<input id="search" type="text" name="search" placeholder="Search..">
+<div id="result"></div>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $("#search").keypress(function() {
+    $.post("http://localhost:9999/", {q: $("#search").val()}).done(
+      function(data) {
+        var ul = $('<ul>');
+        $.each(data, function(index, item) {
+          ul.append(
+            $(document.createElement('li')).text(item)
+          );
+        });
+        $("#result").html(ul);
+      }
+    )
+  });
+</script>
+
+</body>
+</html>
