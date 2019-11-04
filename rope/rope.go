@@ -1,4 +1,3 @@
-//copy from https://github.com/vinzmay/go-rope/blob/master/rope.go
 package rope
 
 import (
