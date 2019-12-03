@@ -1,26 +1,24 @@
-// Copyright (c) 2016 LINE Corporation. All rights reserved.
-// LINE Corporation PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
-
 package main
 
 import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	//var sum int64
-	fmt.Println(mass("14"))
-	fmt.Println(mass("1969"))
-	fmt.Println(mass("100756"))
-	//for _, m := range strings.Split(input, "\n") {
-	//	if m == "" {
-	//		continue
-	//	}
-	//	sum += mass(m)
-	//}
-	//fmt.Println(sum)
+	var sum int64
+	fmt.Println(mass("14")) // 2
+	fmt.Println(mass("1969")) //966
+	fmt.Println(mass("100756")) //50346
+	for _, m := range strings.Split(input, "\n") {
+		if m == "" {
+			continue
+		}
+		sum += mass(m)
+	}
+	fmt.Println(sum)
 }
 
 func mass(s string) int64 {
@@ -30,7 +28,7 @@ func mass(s string) int64 {
 		panic(err)
 	}
 	next := int64(math.Round(float64(m/3)) - 2)
-	sum = next
+	sum = 0
 	for {
 		if next == 0 {
 			break
