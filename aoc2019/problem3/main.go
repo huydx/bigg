@@ -28,8 +28,6 @@ func main() {
 
 	i := 0
 	l := len(program)
-	fmt.Println(l)
-	fmt.Println(program)
 Loop:
 	for {
 		assert(l, i)
