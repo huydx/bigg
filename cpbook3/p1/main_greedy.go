@@ -24,54 +24,33 @@ type pair struct {
 
 func main() {
 	input := []pair{{x: 1, y: 1}, {x: 8, y: 6}, {x: 6, y: 8}, {x: 1, y: 3}}
-	fmt.Println(solve(input))
+	fmt.Println(mindist(input))
 }
 
-func swap(p []pair, i int, j int) {
-	var t pair
-	t = p[i]
-	p[i] = p[j]
-	p[j] = t
-}
-
-func shuffle(p []pair, start int, end int, out chan [] pair) {
-	if start == end {
-		p2 := make([]pair, len(p))
-		copy(p2, p)
-		out <- p2
-	} else {
-		for i := start; i < end; i++ {
-			swap(p, start, i)
-			shuffle(p, start, end, out)
-			swap(p, start, i)
-		}
+func mindist(pairs []pair) float64 {
+	if len(pairs) == 0 {
+		return 0
 	}
-}
-
-func dist(p pair, q pair) float64 {
-	return math.Sqrt(float64((p.x-q.x)*(p.x-q.x) + (p.y-q.y)*(p.y-q.y)))
-}
-
-func sumdist(p []pair) float64 {
-	sum := 0.0
-	for i := 0; i < N; i += 2 {
-		sum += dist(p[i], p[i+1])
-	}
-	return sum
-}
-
-func solve(input []pair) float64 {
-	out := make(chan []pair, 1)
-	shuffle(input, 0, len(input)-1, out)
-	min := 0.0
-	for {
-		select {
-		case t := <-out:
-			s := sumdist(t)
-			if min < s {
-				min = s
+	var min = math.MaxFloat64
+	p1 := pairs[0]
+	for i, p := range pairs[1:] {
+		d1 := dist(p1, p)
+		pairs2 := make([]pair, 0, len(pairs)-2)
+		for j := 1; j < len(pairs); j++ {
+			if j != i+1 {
+				pairs2 = append(pairs2, pairs[j])
 			}
+		}
+		d2 := mindist(pairs2)
+
+
+		if d1+d2 < min {
+			min = d1 + d2
 		}
 	}
 	return min
+}
+
+func dist(p1 pair, p2 pair) float64 {
+	return math.Sqrt(float64((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y)))
 }
