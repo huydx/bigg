@@ -51,7 +51,7 @@ func (c *LRU) Evict() {
 
 	for k, v := range c.accessCount {
 		if !isSet || min > v {
-			fmt.Printf("set key to remove: %d, min: %d, v: %d\n", k, min, v)
+			fmt.Printf("set key to remove: %d, min: %d, entry: %d\n", k, min, v)
 			min, keyToRemove, isSet = v, k, true
 		}
 	}

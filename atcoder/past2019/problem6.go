@@ -36,6 +36,8 @@ func run6(input []byte) {
 		return dict[i] < dict[j]
 	})
 
+	sort.Search()
+
 	fmt.Println(dict)
 }
 
