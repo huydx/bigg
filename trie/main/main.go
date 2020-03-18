@@ -11,11 +11,11 @@ import (
 	"os"
 
 	_ "net/http/pprof"
-	"github.com/huydx/bigg/prefix"
+	"github.com/huydx/bigg/trie"
 )
 
 var (
-	trie = prefix.NewTrie()
+	trie = trie.NewTrie()
 )
 
 type KipalogPost struct {

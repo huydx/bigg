@@ -1,6 +1,6 @@
 
 
-package prefix
+package trie
 
 //import "fmt"
 
