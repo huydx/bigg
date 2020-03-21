@@ -1,6 +1,7 @@
 package stack
 
 import (
+	"sync"
 	"unsafe"
 	"sync/atomic"
 )
@@ -10,18 +11,52 @@ type node struct {
 	next *node
 }
 
-type Stack struct {
+type StackWithMut struct {
+	root *node
+	mut  sync.Mutex
+}
+
+func NewStackWithMut() StackWithMut {
+	return StackWithMut{root: nil, mut: sync.Mutex{}}
+}
+
+func (s StackWithMut) Pop() interface{} {
+	s.mut.Lock()
+	defer s.mut.Unlock()
+	r := s.root
+	if r != nil {
+		s.root = r.next
+		return r.elem
+	} else {
+		return nil
+	}
+}
+
+func (s StackWithMut) Push(e interface{}) {
+	s.mut.Lock()
+	defer s.mut.Unlock()
+	if s.root != nil {
+		n := &node{elem: e}
+		r := s.root
+		n.next = r
+		s.root = n
+	} else {
+		s.root = &node{elem: e}
+	}
+}
+
+type StackWithCAS struct {
 	top unsafe.Pointer // *node
 }
 
-func NewStack() *Stack {
+func NewStackWithCAS() *StackWithCAS {
 	t := unsafe.Pointer(&node{})
-	return &Stack{
+	return &StackWithCAS{
 		top: t,
 	}
 }
 
-func (s *Stack) Pop() interface{} {
+func (s *StackWithCAS) Pop() interface{} {
 	var next, old *node
 	for {
 		old = (*node)(atomic.LoadPointer(&s.top))
@@ -36,15 +71,15 @@ func (s *Stack) Pop() interface{} {
 	return old.elem
 }
 
-func (s *Stack) Push(elem interface{}) {
+func (s *StackWithCAS) Push(elem interface{}) {
 	n := &node{elem: elem, next: nil}
 	var oldTop *node
 	for {
-		 n.next = oldTop
-		 oldTop = (*node)(atomic.LoadPointer(&s.top))
-		 if cas(&s.top, oldTop, n) {
-		 	break
-		 }
+		n.next = oldTop
+		oldTop = (*node)(atomic.LoadPointer(&s.top))
+		if cas(&s.top, oldTop, n) {
+			break
+		}
 	}
 }
 
