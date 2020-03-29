@@ -34,6 +34,7 @@ func (s StackWithMut) Pop() interface{} {
 
 func (s StackWithMut) Push(e interface{}) {
 	s.mut.Lock()
+	sync.Mutex{}
 	defer s.mut.Unlock()
 	if s.root != nil {
 		n := &node{elem: e}
